@@ -17,7 +17,7 @@ distinct_addresses = [row[0] for row in cursor.fetchall()]
 
 headers = {
     'accept': 'application/json',
-    'x-api-key': 'Oy6ETWcruk3sd4QhgFabj841wJtCj2O57YL6xPFl',
+    'x-api-key': '',
 }
 
 def extract_liquidity_pool_market(LiquidityPoolAddress):
