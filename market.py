@@ -51,7 +51,7 @@ class MarketDataFetcher:
             """
             self.cursor.execute(insert_statement, [*market_data.values(), liquidity_pool_address])
             self.connection.commit()
-            print(f'Inserted LiquidityPoolAddress: {liquidity_pool_address}')
+            print(f'Inserted marketdata: {liquidity_pool_address}')
 
     def fetch_and_insert_prices(self):
         distinct_addresses = self.fetch_distinct_addresses()

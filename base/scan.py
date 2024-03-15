@@ -3,10 +3,9 @@ import os
 import requests
 import sqlite3
 from datetime import datetime, timedelta
-import time
 
 class LiquidityPoolExtractor:
-    def __init__(self, chains, database_path='database.db', delay_seconds=3600):
+    def __init__(self, chains, database_path='database.db'):
         dotenv.load_dotenv()
         self.API_KEY = os.getenv('API_KEY')
         self.headers = {
@@ -20,7 +19,6 @@ class LiquidityPoolExtractor:
         }
         self.chains = chains
         self.database_path = database_path
-        self.delay_seconds = delay_seconds
 
     def connect_to_database(self):
         return sqlite3.connect(self.database_path)
@@ -73,18 +71,13 @@ class LiquidityPoolExtractor:
                     )
                 )
                 conn.commit()
-                print(f'Extracting from chain : {chain}, Saved Token: {main_token_symbol}')
 
-    def run_extraction_loop(self):
-        while True:
-            for chain in self.chains:
-                self.extract_liquidity_pools(chain)
-            print(f"Waiting for {self.delay_seconds} seconds before next extraction...")
-            time.sleep(self.delay_seconds)
+    def run_extraction(self):
+        for chain in self.chains:
+            self.extract_liquidity_pools(chain)
 
 if __name__ == "__main__":
     chains = ['ether']
-    delay_seconds = 10  # Set delay to x seconds
 
-    extractor = LiquidityPoolExtractor(chains, delay_seconds=delay_seconds)
-    extractor.run_extraction_loop()
+    extractor = LiquidityPoolExtractor(chains)
+    extractor.run_extraction()
