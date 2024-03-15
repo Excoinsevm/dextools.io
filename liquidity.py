@@ -19,7 +19,7 @@ connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 
 # SQLite query to select distinct addresses from the LiquidityPools table
-query = "SELECT DISTINCT address FROM LiquidityPools"
+query = "SELECT DISTINCT address FROM LiquidityPools WHERE creationTime >= datetime('now', '-1 day');"
 
 # Execute the query
 cursor.execute(query)

@@ -2,12 +2,17 @@
 import requests
 import sqlite3
 import time
+import dotenv
+import os
+
+dotenv.load_dotenv()
+API_KEY = os.getenv('API_KEY')
 
 connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 
 # SQLite query to select distinct addresses from the LiquidityPools table
-query = "SELECT LiquidityPoolAddress FROM LiquidityData WHERE liquidity IS NOT NULL"
+query = "SELECT LiquidityPoolAddress FROM LiquidityData WHERE liquidity IS NOT NULL and LiquidityPoolAddress in (SELECT DISTINCT address FROM LiquidityPools WHERE creationTime >= datetime('now', '-1 day'));"
 
 # Execute the query
 cursor.execute(query)
@@ -19,6 +24,8 @@ headers = {
     'accept': 'application/json',
     'x-api-key': '',
 }
+
+headers['x-api-key']=API_KEY
 
 def extract_liquidity_pool_market(LiquidityPoolAddress):
     response = requests.get(
