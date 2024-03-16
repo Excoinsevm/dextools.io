@@ -18,16 +18,16 @@ class LiquidityInfoRetriever:
 
     def fetch_distinct_addresses(self):
         query = """
-            SELECT DISTINCT address 
+            SELECT DISTINCT chain,address 
             FROM LiquidityPools 
             WHERE creationTime >= datetime('now', '-1 day')
             AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart);
         """
         self.cursor.execute(query)
-        return [row[0] for row in self.cursor.fetchall()]
+        return [row for row in self.cursor.fetchall()]
 
-    def extract_liquidity_info(self, liquidity_pool_address):
-        url = f'https://public-api.dextools.io/trial/v2/pool/ether/{liquidity_pool_address}/liquidity'
+    def extract_liquidity_info(self, chain,liquidity_pool_address):
+        url = f'https://public-api.dextools.io/trial/v2/pool/{chain}/{liquidity_pool_address}/liquidity'
         response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
             liquidity = response.json()['data']['liquidity']
@@ -42,8 +42,8 @@ class LiquidityInfoRetriever:
 
     def retrieve_liquidity_information(self):
         distinct_addresses = self.fetch_distinct_addresses()
-        for liquidity_pool_address in distinct_addresses:
-            self.extract_liquidity_info(liquidity_pool_address)
+        for chain,liquidity_pool_address in distinct_addresses:
+            self.extract_liquidity_info(chain,liquidity_pool_address)
             time.sleep(1)
 
     def run(self):

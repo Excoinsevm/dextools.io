@@ -33,13 +33,14 @@ def run_fetcher():
             logging.error(f"Error in MarketDataFetcher: {str(e)}")
 
 if __name__ == "__main__":
-    chains = ['ether']
-
-    # Create threads for each class and start them
+    # read list of chains from file
+    with open('chains.txt', 'r') as f:
+        chains = f.read().split('\n')
+    # Create threads for each class 
     extractor_thread = threading.Thread(target=run_extractor, args=(chains,))
     retriever_thread = threading.Thread(target=run_retriever)
     fetcher_thread = threading.Thread(target=run_fetcher)
-
+    #start threads
     extractor_thread.start()
     retriever_thread.start()
     fetcher_thread.start()

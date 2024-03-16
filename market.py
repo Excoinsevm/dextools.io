@@ -18,22 +18,18 @@ class MarketDataFetcher:
 
     def fetch_distinct_addresses(self):
         query = """
-            SELECT LiquidityPoolAddress 
-            FROM LiquidityData 
-            WHERE liquidity IS NOT NULL 
-                AND LiquidityPoolAddress IN (
-                    SELECT DISTINCT address 
+            SELECT DISTINCT chain,address 
                     FROM LiquidityPools 
                     WHERE creationTime >= datetime('now', '-1 day')
                 AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
-                );
+				AND address NOT IN (SELECT LiquidityPoolAddress from LiquidityData WHERE liquidity is NULL);
         """
         self.cursor.execute(query)
-        return [row[0] for row in self.cursor.fetchall()]
+        return [row for row in self.cursor.fetchall()]
 
-    def extract_liquidity_pool_market(self, liquidity_pool_address):
+    def extract_liquidity_pool_market(self, chain,liquidity_pool_address):
         response = requests.get(
-            f'https://public-api.dextools.io/trial/v2/pool/ether/{liquidity_pool_address}/price',
+            f'https://public-api.dextools.io/trial/v2/pool/{chain}/{liquidity_pool_address}/price',
             headers=self.headers,
         )
         if response.status_code == 200:
@@ -56,8 +52,8 @@ class MarketDataFetcher:
 
     def fetch_and_insert_prices(self):
         distinct_addresses = self.fetch_distinct_addresses()
-        for liquidity_pool_address in distinct_addresses:
-            market_data = self.extract_liquidity_pool_market(liquidity_pool_address)
+        for chain,liquidity_pool_address in distinct_addresses:
+            market_data = self.extract_liquidity_pool_market(chain,liquidity_pool_address)
             self.insert_marketdata(market_data, liquidity_pool_address)
             time.sleep(1)
 

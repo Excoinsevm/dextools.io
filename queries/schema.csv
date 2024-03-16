@@ -1,0 +1,79 @@
+sql
+"CREATE TABLE ""LiquidityPools"" (
+	""chain""	TEXT,
+	""mainToken_symbol""	TEXT,
+	""mainToken_name""	INTEGER,
+	""mainToken_address""	INTEGER,
+	""exchange_name""	TEXT,
+	""exchange_factory""	TEXT,
+	""address""	TEXT,
+	""sideToken_name""	TEXT,
+	""sideToken_symbol""	TEXT,
+	""sideToken_address""	TEXT,
+	""creationTime""	DATETIME,
+	""timestamp""	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT ""main+side"" UNIQUE(""mainToken_symbol"",""sideToken_symbol"")
+)"
+
+"CREATE TABLE ""LiquidityData"" (
+	""LiquidityPoolAddress""	TEXT,
+	""liquidity""	REAL,
+	""timestamp""	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(""LiquidityPoolAddress"")
+)"
+
+"CREATE TABLE ""MarketData"" (
+	""LiquidityPoolAddress""	TEXT,
+	""price""	REAL,
+	""priceChain""	REAL,
+	""price5m""	REAL,
+	""priceChain5m""	REAL,
+	""volume5m""	REAL,
+	""buys5m""	INTEGER,
+	""sells5m""	INTEGER,
+	""sellVolume5m""	REAL,
+	""buyVolume5m""	REAL,
+	""variation5m""	REAL,
+	""variationChain5m""	REAL,
+	""price1h""	REAL,
+	""priceChain1h""	REAL,
+	""volume1h""	REAL,
+	""buys1h""	INTEGER,
+	""sells1h""	INTEGER,
+	""sellVolume1h""	REAL,
+	""buyVolume1h""	REAL,
+	""variation1h""	REAL,
+	""variationChain1h""	REAL,
+	""price6h""	REAL,
+	""priceChain6h""	REAL,
+	""volume6h""	REAL,
+	""buys6h""	INTEGER,
+	""sells6h""	INTEGER,
+	""sellVolume6h""	REAL,
+	""buyVolume6h""	REAL,
+	""variation6h""	REAL,
+	""variationChain6h""	REAL,
+	""price24h""	REAL,
+	""priceChain24h""	REAL,
+	""volume24h""	REAL,
+	""buys24h""	INTEGER,
+	""sells24h""	INTEGER,
+	""sellVolume24h""	REAL,
+	""buyVolume24h""	REAL,
+	""variation24h""	REAL,
+	""variationChain24h""	REAL,
+	""timestamp""	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(""LiquidityPoolAddress"")
+)"
+
+"CREATE VIEW ""view1"" AS SELECT * FROM LiquidityPools 
+LEFT JOIN LiquidityData on LiquidityPools.address=LiquidityData.LiquidityPoolAddress 
+LEFT JOIN MarketData on LiquidityPools.address=MarketData.LiquidityPoolAddress 
+WHERE liquidity is not NULL
+and creationTime >= datetime('now', '-1 day')"
+"CREATE TABLE ""TelegramAleart"" (
+	""mainToken_address""	TEXT,
+	""timestamp""	DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(""mainToken_address"")
+)"
+
