@@ -25,6 +25,7 @@ class MarketDataFetcher:
                     SELECT DISTINCT address 
                     FROM LiquidityPools 
                     WHERE creationTime >= datetime('now', '-1 day')
+                AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
                 );
         """
         self.cursor.execute(query)
