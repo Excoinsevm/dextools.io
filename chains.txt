@@ -1,7 +1,3 @@
 ether
-solana
-bnb
 arbitrum
-polygon
 base
-avalanche

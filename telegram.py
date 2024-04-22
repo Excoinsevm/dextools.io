@@ -46,6 +46,8 @@ class TelegramNotifier:
             WHERE liquidity >= {config.liquidity}
             AND volume24h >= {config.volume24h}
             AND variation24h >= {config.variation24h}
+            AND transactions >= {config.transactions}
+            AND fdv >= {config.marketcap}
             AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
         """
         self.cursor.execute(query)
@@ -60,6 +62,8 @@ class TelegramNotifier:
             sideToken_symbol = data['sideToken_symbol']
             liquidity = round(data['liquidity'], 2)
             volume24h = round(data['volume24h'], 2)
+            transactions = round(data['transactions'], 2)
+            marketcap = round(data['fdv'], 2)
             messageList = [
                 f'chain : {chain}',
                 f'mainToken_symbol : {mainToken_symbol}',
@@ -67,7 +71,9 @@ class TelegramNotifier:
                 f'exchange_name : {exchange_name}',
                 f'sideToken_symbol : {sideToken_symbol}',
                 f'liquidity : {"{:,}".format(liquidity)}',
-                f'volume24h : {"{:,}".format(volume24h)}'
+                f'volume24h : {"{:,}".format(volume24h)}',
+                f'transactions : {"{:,}".format(transactions)}',
+                f'marketcap : {"{:,}".format(marketcap)}'
             ]
             self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
