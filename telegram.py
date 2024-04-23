@@ -44,9 +44,7 @@ class TelegramNotifier:
             SELECT *
             FROM view1
             WHERE liquidity >= {config.liquidity}
-            AND volume24h >= {config.volume24h}
-            AND variation24h >= {config.variation24h}
-            AND transactions >= {config.transactions}
+            AND volume1h >= {config.volume1h}
             AND fdv >= {config.marketcap}
             AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
         """
@@ -61,7 +59,14 @@ class TelegramNotifier:
             exchange_name = data['exchange_name']
             sideToken_symbol = data['sideToken_symbol']
             liquidity = round(data['liquidity'], 2)
-            volume24h = round(data['volume24h'], 2)
+            try:
+                volume6h = round(data['volume6h'], 2)
+            except:
+                volume6h = round(data['volume1h'], 2)
+            try:
+                volume24h = round(data['volume24h'], 2)
+            except:
+                volume24h=volume6h
             transactions = round(data['transactions'], 2)
             marketcap = round(data['fdv'], 2)
             messageList = [
@@ -72,7 +77,8 @@ class TelegramNotifier:
                 f'sideToken_symbol : {sideToken_symbol}',
                 f'liquidity : {"{:,}".format(liquidity)}',
                 f'volume24h : {"{:,}".format(volume24h)}',
-                f'transactions : {"{:,}".format(transactions)}',
+                f'volume6h : {"{:,}".format(volume6h)}',
+                #f'transactions : {"{:,}".format(transactions)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
             self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))

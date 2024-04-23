@@ -32,7 +32,7 @@ class InfoDataFetcher:
 
     def extract_liquidity_pool_info(self, chain,mainToken_address):
         response = requests.get(
-            f'https://public-api.dextools.io/trial/v2/token/{chain}/{mainToken_address}/info',
+            f'https://public-api.dextools.io/standard/v2/token/{chain}/{mainToken_address}/info',
             headers=self.headers,
         )
         if response.status_code == 200:

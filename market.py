@@ -29,7 +29,7 @@ class MarketDataFetcher:
 
     def extract_liquidity_pool_market(self, chain,liquidity_pool_address):
         response = requests.get(
-            f'https://public-api.dextools.io/trial/v2/pool/{chain}/{liquidity_pool_address}/price',
+            f'https://public-api.dextools.io/standard/v2/pool/{chain}/{liquidity_pool_address}/price',
             headers=self.headers,
         )
         if response.status_code == 200:

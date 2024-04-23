@@ -27,7 +27,7 @@ class LiquidityInfoRetriever:
         return [row for row in self.cursor.fetchall()]
 
     def extract_liquidity_info(self, chain,liquidity_pool_address):
-        url = f'https://public-api.dextools.io/trial/v2/pool/{chain}/{liquidity_pool_address}/liquidity'
+        url = f'https://public-api.dextools.io/standard/v2/pool/{chain}/{liquidity_pool_address}/liquidity'
         response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
             liquidity = response.json()['data']['liquidity']

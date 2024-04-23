@@ -30,7 +30,7 @@ class LiquidityPoolExtractor:
         params['from'] = datetime.now() - timedelta(hours=24)
         params['to'] = datetime.now()
 
-        response = requests.get(f'https://public-api.dextools.io/trial/v2/pool/{chain}', params=params, headers=self.headers)
+        response = requests.get(f'https://public-api.dextools.io/standard/v2/pool/{chain}', params=params, headers=self.headers)
 
         if response.status_code == 200:
             liquidity_pools = response.json()['data']['results']

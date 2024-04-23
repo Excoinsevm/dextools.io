@@ -4,15 +4,16 @@ from scan import LiquidityPoolExtractor
 from liquidity import LiquidityInfoRetriever
 from market import MarketDataFetcher
 from info import InfoDataFetcher
+import config
 
 # Setup logging
 logging.basicConfig(filename='error.log', level=logging.ERROR)
+delay_module = config.delay_module
 
 def run_extractor(chains):
     while True:
         try:
-            delay_seconds = 10  # Set delay to x seconds
-            extractor = LiquidityPoolExtractor(chains, delay_seconds=delay_seconds)
+            extractor = LiquidityPoolExtractor(chains, delay_seconds=5*delay_module)
             extractor.run_extraction_loop()
         except Exception as e:
             logging.error(f"Error in LiquidityPoolExtractor: {str(e)}")
@@ -20,7 +21,7 @@ def run_extractor(chains):
 def run_retriever():
     while True:
         try:
-            liquidity_retriever = LiquidityInfoRetriever(delay=10)  # Set delay to x seconds)
+            liquidity_retriever = LiquidityInfoRetriever(delay=delay_module)  # Set delay to x seconds)
             liquidity_retriever.run()
         except Exception as e:
             logging.error(f"Error in LiquidityInfoRetriever: {str(e)}")
@@ -28,7 +29,7 @@ def run_retriever():
 def run_fetcher():
     while True:
         try:
-            price_fetcher = MarketDataFetcher(delay=10)  # Set delay to x seconds
+            price_fetcher = MarketDataFetcher(delay=delay_module)  # Set delay to x seconds
             price_fetcher.run()
         except Exception as e:
             logging.error(f"Error in MarketDataFetcher: {str(e)}")
@@ -36,7 +37,7 @@ def run_fetcher():
 def run_infodata():
     while True:
         try:
-            info_fetcher = InfoDataFetcher(delay=10)  # Set delay to x seconds
+            info_fetcher = InfoDataFetcher(delay=delay_module)  # Set delay to x seconds
             info_fetcher.run()
         except Exception as e:
             logging.error(f"Error in InfoDataFetcher: {str(e)}")
