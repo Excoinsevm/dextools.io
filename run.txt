@@ -1,0 +1,9 @@
+google-chrome --proxy-server="http://localhost:8080" --no-sandbox
+
+start chrome --proxy-server="http://localhost:8080" 
+
+https://dexscreener.com/?rankBy=pairAge&order=desc&chainIds=ethereum,arbitrum,base&minLiq=5000&minFdv=25000&maxAge=24&min24HTxns=10&min24HSells=1&min24HVol=5000
+
+mitmdump -s websocket_interceptor.py
+
+python telegram.py
