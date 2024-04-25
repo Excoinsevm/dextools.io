@@ -66,14 +66,40 @@ sql
 	PRIMARY KEY(""LiquidityPoolAddress"")
 )"
 
-"CREATE VIEW ""view1"" AS SELECT * FROM LiquidityPools 
-LEFT JOIN LiquidityData on LiquidityPools.address=LiquidityData.LiquidityPoolAddress 
-LEFT JOIN MarketData on LiquidityPools.address=MarketData.LiquidityPoolAddress 
-WHERE liquidity is not NULL
-and creationTime >= datetime('now', '-1 day')"
 "CREATE TABLE ""TelegramAleart"" (
 	""mainToken_address""	TEXT,
 	""timestamp""	DATETIME DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY(""mainToken_address"")
+)"
+
+"CREATE TABLE ""InfoData"" (
+	""mainToken_address""	TEXT UNIQUE,
+	""circulatingSupply""	REAL,
+	""totalSupply""	REAL,
+	""mcap""	REAL,
+	""fdv""	REAL,
+	""holders""	REAL,
+	""transactions""	REAL
+)"
+
+"CREATE VIEW ""view1"" AS SELECT * FROM LiquidityPools 
+LEFT JOIN LiquidityData on LiquidityPools.address=LiquidityData.LiquidityPoolAddress 
+LEFT JOIN MarketData on LiquidityPools.address=MarketData.LiquidityPoolAddress 
+LEFT JOIN InfoData on LiquidityPools.mainToken_address=InfoData.mainToken_address
+WHERE liquidity is not NULL
+and creationTime >= datetime('now', '-1 day')"
+"CREATE TABLE ""DexScreener_L1"" (
+	""baseToken""	JSON,
+	""chainId""	INTEGER,
+	""dexId""	INTEGER,
+	""liquidity""	JSON,
+	""marketCap""	REAL,
+	""pairAddress""	TEXT,
+	""pairCreatedAt""	REAL,
+	""priceUsd""	REAL,
+	""quoteToken""	JSON,
+	""txns""	JSON,
+	""volume""	JSON,
+	PRIMARY KEY(""pairAddress"")
 )"
 
