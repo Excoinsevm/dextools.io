@@ -39,36 +39,73 @@ class TelegramNotifier:
             print(f"Waiting for {self.delay_seconds} seconds before next notification...")
             time.sleep(self.delay_seconds)
 
+    # def fetch_and_notify(self):
+    #     query = f"""
+    #         SELECT *
+    #         FROM view1
+    #         WHERE liquidity >= {config.liquidity}
+    #         AND volume1h >= {config.volume1h}
+    #         AND fdv >= {config.marketcap}
+    #         AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
+    #     """
+    #     self.cursor.execute(query)
+    #     results = self.cursor.fetchall()
+    #     column_names = [description[0] for description in self.cursor.description]
+    #     for row in results:
+    #         data = {column_names[i]: row[i] for i in range(len(column_names))}
+    #         chain = data['chain']
+    #         mainToken_symbol = data['mainToken_symbol']
+    #         mainToken_address = data['mainToken_address']
+    #         exchange_name = data['exchange_name']
+    #         sideToken_symbol = data['sideToken_symbol']
+    #         liquidity = round(data['liquidity'], 2)
+    #         try:
+    #             volume6h = round(data['volume6h'], 2)
+    #         except:
+    #             volume6h = round(data['volume1h'], 2)
+    #         try:
+    #             volume24h = round(data['volume24h'], 2)
+    #         except:
+    #             volume24h=volume6h
+    #         transactions = round(data['transactions'], 2)
+    #         marketcap = round(data['fdv'], 2)
+    #         messageList = [
+    #             f'chain : {chain}',
+    #             f'mainToken_symbol : {mainToken_symbol}',
+    #             f'mainToken_address : {mainToken_address}',
+    #             f'exchange_name : {exchange_name}',
+    #             f'sideToken_symbol : {sideToken_symbol}',
+    #             f'liquidity : {"{:,}".format(liquidity)}',
+    #             f'volume24h : {"{:,}".format(volume24h)}',
+    #             f'volume6h : {"{:,}".format(volume6h)}',
+    #             #f'transactions : {"{:,}".format(transactions)}',
+    #             f'marketcap : {"{:,}".format(marketcap)}'
+    #         ]
+    #         self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
+    #         self.save_notification_address(mainToken_address)
+
     def fetch_and_notify(self):
         query = f"""
             SELECT *
-            FROM view1
-            WHERE liquidity >= {config.liquidity}
-            AND volume1h >= {config.volume1h}
-            AND fdv >= {config.marketcap}
-            AND mainToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
+            FROM dexscreener_pairs
+            WHERE liquidity_usd >= {config.liquidity}
+            AND volume_h24 >= {config.volume1h}
+            AND marketCap >= {config.marketcap}
+            AND baseToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
         """
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         column_names = [description[0] for description in self.cursor.description]
         for row in results:
             data = {column_names[i]: row[i] for i in range(len(column_names))}
-            chain = data['chain']
-            mainToken_symbol = data['mainToken_symbol']
-            mainToken_address = data['mainToken_address']
-            exchange_name = data['exchange_name']
-            sideToken_symbol = data['sideToken_symbol']
-            liquidity = round(data['liquidity'], 2)
-            try:
-                volume6h = round(data['volume6h'], 2)
-            except:
-                volume6h = round(data['volume1h'], 2)
-            try:
-                volume24h = round(data['volume24h'], 2)
-            except:
-                volume24h=volume6h
-            transactions = round(data['transactions'], 2)
-            marketcap = round(data['fdv'], 2)
+            chain = data['chainId']
+            mainToken_symbol = data['baseToken_symbol']
+            mainToken_address = data['baseToken_address']
+            exchange_name = data['dexId']
+            sideToken_symbol = data['quoteToken_symbol']
+            liquidity = round(data['liquidity_usd'], 2)
+            volume24h=round(data['volume_h24'], 2)
+            marketcap = round(data['marketCap'], 2)
             messageList = [
                 f'chain : {chain}',
                 f'mainToken_symbol : {mainToken_symbol}',
@@ -77,8 +114,6 @@ class TelegramNotifier:
                 f'sideToken_symbol : {sideToken_symbol}',
                 f'liquidity : {"{:,}".format(liquidity)}',
                 f'volume24h : {"{:,}".format(volume24h)}',
-                f'volume6h : {"{:,}".format(volume6h)}',
-                #f'transactions : {"{:,}".format(transactions)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
             self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
