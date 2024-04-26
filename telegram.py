@@ -99,8 +99,10 @@ class TelegramNotifier:
         for row in results:
             data = {column_names[i]: row[i] for i in range(len(column_names))}
             chain = data['chainId']
-            mainToken_symbol = data['baseToken_symbol']
-            mainToken_address = data['baseToken_address']
+            mainToken_symbol = data['baseToken_symbol'].strip()
+            mainToken_address = data['baseToken_address'].strip()
+            maintoken_link=f'https://dexscreener.com/{chain}/{mainToken_address}'
+            twitter_link=f'https://twitter.com/search?q=%24{mainToken_symbol}'
             exchange_name = data['dexId']
             sideToken_symbol = data['quoteToken_symbol']
             liquidity = round(data['liquidity_usd'], 2)
@@ -110,6 +112,8 @@ class TelegramNotifier:
                 f'chain : {chain}',
                 f'mainToken_symbol : {mainToken_symbol}',
                 f'mainToken_address : {mainToken_address}',
+                f'maintoken_link : {maintoken_link}',
+                f'twitter_link : {twitter_link}',
                 f'exchange_name : {exchange_name}',
                 f'sideToken_symbol : {sideToken_symbol}',
                 f'liquidity : {"{:,}".format(liquidity)}',
