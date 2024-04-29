@@ -126,7 +126,7 @@ class TelegramNotifier:
                 f'volume24h : {"{:,}".format(volume24h)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
-            if not any(mainToken_symbol in x for x in input_filter):
+            if not any(mainToken_symbol.upper() in x for x in input_filter):
                 print(mainToken_symbol) 
                 self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
