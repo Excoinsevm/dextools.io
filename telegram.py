@@ -7,6 +7,12 @@ import config
 import time
 import dotenv
 
+# Open the file in read mode
+with open("filter.txt", "r") as my_file:
+    data = my_file.read()
+# Split the text when newline ('\\n') is encountered
+input_filter=  data.split("\n")
+
 class TelegramNotifier:
     def __init__(self, delay_seconds=10):
         dotenv.load_dotenv()
@@ -120,7 +126,9 @@ class TelegramNotifier:
                 f'volume24h : {"{:,}".format(volume24h)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
-            self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
+            if not any(mainToken_symbol in x for x in input_filter):
+                print(mainToken_symbol) 
+                self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
 
 if __name__ == "__main__":
