@@ -2,3 +2,4 @@
 database*
 *.log
 __pycache__
+gsheet.json

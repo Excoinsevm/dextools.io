@@ -6,12 +6,18 @@ from urllib.parse import quote_plus
 import config
 import time
 import dotenv
+from gsheet import GoogleSheetDownloader
+
+# gsheet details
+gsheet_credentials_path = 'gsheet.json'
+sheetname = config.sheetname
+worksheetname = config.worksheetname
 
 # Open the file in read mode
-with open("filter.txt", "r") as my_file:
-    data = my_file.read()
-# Split the text when newline ('\\n') is encountered
-input_filter=  data.split("\n")
+# with open("filter.txt", "r") as my_file:
+#     data = my_file.read()
+# # Split the text when newline ('\\n') is encountered
+# input_filter=  data.split("\n")
 
 class TelegramNotifier:
     def __init__(self, delay_seconds=10):
@@ -95,7 +101,7 @@ class TelegramNotifier:
             SELECT *
             FROM dexscreener_pairs
             WHERE liquidity_usd >= {config.liquidity}
-            AND volume_h24 >= {config.volume1h}
+            AND volume_h24 >= {config.volume_h24}
             AND marketCap >= {config.marketcap}
             AND baseToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
         """
@@ -126,6 +132,7 @@ class TelegramNotifier:
                 f'volume24h : {"{:,}".format(volume24h)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
+            input_filter = downloader.download_sheet(sheetname, worksheetname)
             if not any(mainToken_symbol.upper() in x for x in input_filter):
                 print(mainToken_symbol) 
                 self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
@@ -133,5 +140,6 @@ class TelegramNotifier:
 
 if __name__ == "__main__":
     delay_seconds = 10  # Set delay to x seconds
+    downloader = GoogleSheetDownloader(gsheet_credentials_path)
     notifier = TelegramNotifier(delay_seconds=delay_seconds)
     notifier.fetch_and_notify_loop()
