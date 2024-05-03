@@ -14,7 +14,7 @@ class GoogleSheetDownloader:
         data = wks_read.get_all_values()
         headers = data.pop(0)
         df_down_gsheet = pd.DataFrame(data, columns=headers)
-        return df_down_gsheet.chain.to_list()
+        return df_down_gsheet.textfilter.to_list()
 
 # Example usage
 # if __name__ == "__main__":
