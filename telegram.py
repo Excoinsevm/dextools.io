@@ -110,6 +110,8 @@ class TelegramNotifier:
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         column_names = [description[0] for description in self.cursor.description]
+        if results:
+            input_filter = downloader.download_sheet(sheetname, worksheetname)
         for row in results:
             data = {column_names[i]: row[i] for i in range(len(column_names))}
             chain = data['chainId']
@@ -134,15 +136,13 @@ class TelegramNotifier:
                 f'volume24h : {"{:,}".format(volume24h)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
-            input_filter = downloader.download_sheet(sheetname, worksheetname)
             if first_run:
-                continue
+                pass
             else:
                 if not any(mainToken_symbol.upper() in x for x in input_filter):
                     print(mainToken_symbol) 
                     self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
-            time.sleep(2)
 
 if __name__ == "__main__":
     delay_seconds = 10  # Set delay to x seconds
