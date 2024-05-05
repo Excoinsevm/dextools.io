@@ -137,6 +137,7 @@ class TelegramNotifier:
                 print(mainToken_symbol) 
                 self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
+            time.sleep(2)
 
 if __name__ == "__main__":
     delay_seconds = 10  # Set delay to x seconds
