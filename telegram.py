@@ -119,7 +119,10 @@ class TelegramNotifier:
             mainToken_address = data['baseToken_address'].strip()
             maintoken_link=f'https://dexscreener.com/{chain}/{mainToken_address}'
             twitter_link=f'https://twitter.com/search?q=%24{mainToken_symbol}'
-            tokensniffer_link=f'https://tokensniffer.com/token/{chain}/{mainToken_address}'
+            if 'eth' in chain:
+                tokensniffer_link=f'https://tokensniffer.com/token/eth/{mainToken_address}'
+            else:
+                tokensniffer_link=f'https://tokensniffer.com/token/{chain}/{mainToken_address}'
             exchange_name = data['dexId']
             sideToken_symbol = data['quoteToken_symbol']
             liquidity = round(data['liquidity_usd'], 2)
