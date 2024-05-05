@@ -119,6 +119,7 @@ class TelegramNotifier:
             mainToken_address = data['baseToken_address'].strip()
             maintoken_link=f'https://dexscreener.com/{chain}/{mainToken_address}'
             twitter_link=f'https://twitter.com/search?q=%24{mainToken_symbol}'
+            tokensniffer_link=f'https://tokensniffer.com/token/{chain}/{mainToken_address}'
             exchange_name = data['dexId']
             sideToken_symbol = data['quoteToken_symbol']
             liquidity = round(data['liquidity_usd'], 2)
@@ -129,6 +130,7 @@ class TelegramNotifier:
                 f'mainToken_symbol : {mainToken_symbol}',
                 f'mainToken_address : {mainToken_address}',
                 f'maintoken_link : {maintoken_link}',
+                f'tokensniffer_link : {tokensniffer_link}',
                 f'twitter_link : {twitter_link}',
                 f'exchange_name : {exchange_name}',
                 f'sideToken_symbol : {sideToken_symbol}',
