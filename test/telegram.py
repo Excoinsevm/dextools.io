@@ -19,20 +19,18 @@ worksheetname = config.worksheetname
 # # Split the text when newline ('\\n') is encountered
 # input_filter=  data.split("\n")
 
-class TelegramNotifier:
-    def __init__(self, delay_seconds=10):
-        dotenv.load_dotenv()
-        self.TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-        self.TELEGRAM_CHATID = os.getenv('TELEGRAM_CHATID')
-        self.connection = sqlite3.connect('database.db')
-        self.cursor = self.connection.cursor()
-        self.delay_seconds = delay_seconds
 
-    def telegram_bot_sendtext(self, bot_message):
-        encoded_message = quote_plus(bot_message)
-        send_text = f'https://api.telegram.org/bot{self.TELEGRAM_BOT_TOKEN}/sendMessage?chat_id={self.TELEGRAM_CHATID}&text={encoded_message}'
-        response = requests.get(send_text)
-        return response.json()
+dotenv.load_dotenv()
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHATID = os.getenv('TELEGRAM_CHATID')
+connection = sqlite3.connect('database.db')
+cursor = connection.cursor()
+
+def telegram_bot_sendtext( bot_message):
+    encoded_message = quote_plus(bot_message)
+    send_text = f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage?chat_id={TELEGRAM_CHATID}&parse_mode=Markdown&text={encoded_message}'
+    response = requests.get(send_text)
+    return response.json()
 
     def save_notification_address(self, mainToken_address):
         self.cursor.execute(
@@ -134,8 +132,7 @@ class TelegramNotifier:
                 f'twitter_link : {twitter_link}',
                 f'exchange_name : {exchange_name}',
                 f'sideToken_symbol : {sideToken_symbol}',
-                f'liquidity : {"{:,}".format(liquidity)}',
-                f'volume24h : {"{:,}".format(volume24h)}',
+                f'liquidity : {"{:,}".format(liquidity)} volume24h : {"{:,}".format(volume24h)}',
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
             if first_run:
