@@ -46,6 +46,8 @@ class TelegramNotifier:
         print(f'Saved : {mainToken_address}, at {datetime.now()}')
 
     def fetch_and_notify_loop(self):
+        self.fetch_and_notify(first_run=1)
+        print('Doing first run....')
         while True:
             self.fetch_and_notify()
             print(f"Waiting for {self.delay_seconds} seconds before next notification...")
@@ -96,7 +98,7 @@ class TelegramNotifier:
     #         self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
     #         self.save_notification_address(mainToken_address)
 
-    def fetch_and_notify(self):
+    def fetch_and_notify(self,first_run=None):
         query = f"""
             SELECT *
             FROM dexscreener_pairs
@@ -133,9 +135,12 @@ class TelegramNotifier:
                 f'marketcap : {"{:,}".format(marketcap)}'
             ]
             input_filter = downloader.download_sheet(sheetname, worksheetname)
-            if not any(mainToken_symbol.upper() in x for x in input_filter):
-                print(mainToken_symbol) 
-                self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
+            if first_run:
+                continue
+            else:
+                if not any(mainToken_symbol.upper() in x for x in input_filter):
+                    print(mainToken_symbol) 
+                    self.telegram_bot_sendtext('\n'.join(str(s) for s in messageList))
             self.save_notification_address(mainToken_address)
             time.sleep(2)
 
