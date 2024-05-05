@@ -46,8 +46,8 @@ class TelegramNotifier:
         print(f'Saved : {mainToken_address}, at {datetime.now()}')
 
     def fetch_and_notify_loop(self):
-        self.fetch_and_notify(first_run=1)
         print('Doing first run....')
+        self.fetch_and_notify(first_run=1)
         while True:
             self.fetch_and_notify()
             print(f"Waiting for {self.delay_seconds} seconds before next notification...")
