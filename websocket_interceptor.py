@@ -1,5 +1,4 @@
-import logging
-import re
+import time
 import sqlite3
 import json
 
@@ -39,3 +38,4 @@ def websocket_message(flow: http.HTTPFlow):
             """, (json.dumps(baseToken),chainId,dexId,json.dumps(liquidity),marketCap,pairAddress,pairCreatedAt,priceUsd,json.dumps(quoteToken),json.dumps(txns),json.dumps(volume)) )
             connection.commit()
             print(pairAddress)
+        time.sleep(10)

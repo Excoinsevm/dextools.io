@@ -120,3 +120,9 @@ and creationTime >= datetime('now', '-1 day')"
 	json_extract(quoteToken, '$.symbol') AS quoteToken_symbol,
 	json_extract(volume, '$.h24') AS volume_h24
 FROM DexScreener_L1"
+"CREATE TABLE ""TokenScore"" (
+	""baseToken_address""	TEXT,
+	""dextScore""	NUMERIC,
+	PRIMARY KEY(""baseToken_address"")
+)"
+

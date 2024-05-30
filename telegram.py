@@ -102,10 +102,13 @@ class TelegramNotifier:
         query = f"""
             SELECT *
             FROM dexscreener_pairs
+            left JOIN TokenScore on 
+	        dexscreener_pairs.baseToken_address=TokenScore.baseToken_address
             WHERE liquidity_usd >= {config.liquidity}
             AND volume_h24 >= {config.volume_h24}
             AND marketCap >= {config.marketcap}
-            AND baseToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
+            AND dexscreener_pairs.baseToken_address NOT IN (SELECT mainToken_address from TelegramAleart)
+            AND dextScore>={config.dextScore}
         """
         self.cursor.execute(query)
         results = self.cursor.fetchall()
@@ -123,6 +126,7 @@ class TelegramNotifier:
                 tokensniffer_link=f'https://tokensniffer.com/token/eth/{mainToken_address}'
             else:
                 tokensniffer_link=f'https://tokensniffer.com/token/{chain}/{mainToken_address}'
+            dextScore=data['dextScore']
             exchange_name = data['dexId']
             sideToken_symbol = data['quoteToken_symbol']
             liquidity = round(data['liquidity_usd'], 2)
@@ -134,6 +138,7 @@ class TelegramNotifier:
                 f'mainToken_address : {mainToken_address}',
                 f'maintoken_link : {maintoken_link}',
                 f'tokensniffer_link : {tokensniffer_link}',
+                f'dextScore : {dextScore}',
                 f'twitter_link : {twitter_link}',
                 f'exchange_name : {exchange_name}',
                 f'sideToken_symbol : {sideToken_symbol}',

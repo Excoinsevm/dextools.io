@@ -6,3 +6,4 @@ marketcap=25000
 delay_module=60
 sheetname = 'dex_params'
 worksheetname = 'Sheet1'
+dextScore=50
